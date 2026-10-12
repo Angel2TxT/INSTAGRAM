@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="glossy_background">#0A0A0C</color>
+    <color name="glossy_card_bg">#18181C</color>
+    <color name="glossy_white">#FFFFFF</color>
+    <color name="glossy_white_70">#B3FFFFFF</color>
+    <color name="glossy_white_15">#26FFFFFF</color>
+    <color name="glossy_border">#33FFFFFF</color>
+</resources>
