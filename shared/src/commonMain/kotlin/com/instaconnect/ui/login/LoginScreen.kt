@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -258,7 +259,113 @@ fun LoginScreen(
 
                         Spacer(modifier = Modifier.height(6.dp))
 
-                        // Botón Principal: Iniciar Sesión con cualquier cuenta
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        // Botón Principal: Inicio de Sesión Oficial con Instagram OAuth 2.0
+                        Button(
+                            onClick = { onInstagramLogin() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = Color.White
+                            ),
+                            contentPadding = PaddingValues(0.dp),
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
+                            enabled = !isLoading
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        Brush.horizontalGradient(
+                                            listOf(
+                                                Color(0xFF833AB4),
+                                                Color(0xFFC13584),
+                                                Color(0xFFE1306C),
+                                                Color(0xFFFD1D1D),
+                                                Color(0xFFF77737)
+                                            )
+                                        )
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        Icons.Filled.CameraAlt,
+                                        contentDescription = "Instagram",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(
+                                        "Continuar con Instagram",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        letterSpacing = (-0.2).sp
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Tarjeta informativa de seguridad OAuth 2.0 Oficial
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(DarkColors.SurfaceVariant.copy(alpha = 0.7f))
+                                .border(0.5.dp, Color(0xFF2C2C2E), RoundedCornerShape(10.dp))
+                                .padding(horizontal = 12.dp, vertical = 9.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Filled.Lock,
+                                contentDescription = "Seguridad",
+                                tint = Color(0xFF34C759),
+                                modifier = Modifier.size(15.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Autenticación segura en servidores oficiales de Meta",
+                                fontSize = 11.sp,
+                                color = Color(0xFF8E8E93),
+                                letterSpacing = (-0.1).sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(18.dp))
+
+                        // Divisor "o bien"
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            HorizontalDivider(
+                                modifier = Modifier.weight(1f),
+                                color = Color(0xFF2C2C2E)
+                            )
+                            Text(
+                                "  o acceso manual  ",
+                                color = Color(0xFF8E8E93),
+                                fontSize = 11.sp
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.weight(1f),
+                                color = Color(0xFF2C2C2E)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(18.dp))
+
+                        // Botón Secundario: Iniciar Sesión con credenciales locales o demo
                         Button(
                             onClick = {
                                 val cleanInput = usernameOrEmail.trim()
@@ -275,87 +382,25 @@ fun LoginScreen(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(48.dp),
+                                .height(46.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.Black
+                                containerColor = DarkColors.SurfaceVariant,
+                                contentColor = Color.White
                             ),
+                            border = BorderStroke(0.5.dp, Color(0xFF38383A)),
                             elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
                             enabled = !isLoading
                         ) {
                             if (isLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(18.dp),
-                                    color = Color.Black,
+                                    color = Color.White,
                                     strokeWidth = 2.dp
                                 )
                             } else {
                                 Text(
-                                    "Iniciar Sesión",
-                                    color = Color.Black,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // Divisor "o bien"
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                color = Color(0xFF2C2C2E)
-                            )
-                            Text(
-                                "  o bien  ",
-                                color = Color(0xFF8E8E93),
-                                fontSize = 11.sp
-                            )
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                color = Color(0xFF2C2C2E)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // Botón Secundario: Acceso Directo con Meta Graph API oficial
-                        OutlinedButton(
-                            onClick = { onInstagramLogin() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            border = BorderStroke(
-                                width = 1.dp,
-                                brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
-                                    listOf(Color.White.copy(alpha = 0.25f), Color.White.copy(alpha = 0.08f))
-                                )
-                            ),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = DarkColors.SurfaceVariant.copy(alpha = 0.85f),
-                                contentColor = Color.White
-                            ),
-                            enabled = !isLoading
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    Icons.Filled.CameraAlt,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    "Conectar con Meta Graph API",
+                                    "Iniciar con Usuario / Demo",
                                     color = Color.White,
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 13.sp
