@@ -1,4 +1,4 @@
-# GramPulse (InstaConnect) 📸⚡
+# GramPulse (InstaConnect)
 
 **GramPulse** (también conocido como *InstaConnect*) es una aplicación moderna multiplataforma desarrollada con **Kotlin Multiplatform (KMP)** y **Compose Multiplatform**, diseñada para ofrecer una experiencia fluida inspirada en Instagram tanto en dispositivos móviles (**Android**) como en ordenadores de escritorio (**Desktop - Windows/macOS/Linux**).
 
@@ -6,23 +6,23 @@ El proyecto integra soporte tanto para la **Meta Graph API oficial de Instagram*
 
 ---
 
-## 📑 Tabla de Contenidos
+## Tabla de Contenidos
 
-- [Características Principales](#-características-principales)
-- [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
-- [Stack Tecnológico](#-stack-tecnológico)
-- [Requisitos Previos](#-requisitos-previos)
-- [Inicialización y Ejecución](#-inicialización-y-ejecución)
+- [Características Principales](#características-principales)
+- [Arquitectura del Proyecto](#arquitectura-del-proyecto)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Requisitos Previos](#requisitos-previos)
+- [Inicialización y Ejecución](#inicialización-y-ejecución)
   - [Ejecutar en Desktop](#1-ejecutar-en-desktop)
   - [Ejecutar en Android](#2-ejecutar-en-android)
   - [Empaquetar para Escritorio](#3-empaquetado-de-escritorio)
-- [Configuración de Meta / Instagram API](#-configuración-de-meta--instagram-api)
-- [Equipo de Desarrollo](#-equipo-de-desarrollo)
-- [Licencia y Créditos](#-licencia-y-créditos)
+- [Configuración de Meta / Instagram API](#configuración-de-meta--instagram-api)
+- [Equipo de Desarrollo](#equipo-de-desarrollo)
+- [Licencia y Créditos](#licencia-y-créditos)
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
 - **Autenticación Versátil (3 Modos):**
   - **Modo Demostración (Offline / Mock Data):** Explora de inmediato el feed, perfiles, historias y estadísticas con datos simulados interactivos.
@@ -47,7 +47,7 @@ El proyecto integra soporte tanto para la **Meta Graph API oficial de Instagram*
 
 ---
 
-## 🏛 Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
 El proyecto está organizado en una arquitectura modular limpia multi-módulo:
 
@@ -92,7 +92,7 @@ instagram/
 
 ---
 
-## 🛠 Stack Tecnológico
+## Stack Tecnológico
 
 | Componente | Tecnología / Versión |
 | :--- | :--- |
@@ -107,7 +107,7 @@ instagram/
 
 ---
 
-## 📋 Requisitos Previos
+## Requisitos Previos
 
 1. **Java Development Kit (JDK):**
    - JDK 17 o superior instalado (ej. Eclipse Temurin, Oracle JDK u OpenJDK 17).
@@ -121,7 +121,7 @@ instagram/
 
 ---
 
-## 🚀 Inicialización y Ejecución
+## Inicialización y Ejecución
 
 Clona o abre la carpeta del proyecto en tu terminal:
 
@@ -142,7 +142,7 @@ La forma más rápida de probar la aplicación sin necesidad de emuladores ni di
   ./gradlew :desktopApp:run
   ```
 
-> 💡 **Nota:** Se abrirá una ventana de escritorio con las dimensiones estilizadas de un teléfono móvil (440x860 px) ejecutando toda la interfaz gráfica en Compose Desktop.
+> **Nota:** Se abrirá una ventana de escritorio con las dimensiones estilizadas de un teléfono móvil (440x860 px) ejecutando toda la interfaz gráfica en Compose Desktop.
 
 ---
 
@@ -180,10 +180,10 @@ Los instaladores generados (`.msi` en Windows, `.dmg` en macOS o `.deb` en Linux
 
 ---
 
-## 🔐 Configuración de Meta / Instagram API
+## Configuración de Meta / Instagram API
 
 El archivo central de configuración se encuentra en:
-👉 `shared/src/commonMain/kotlin/com/instaconnect/data/InstagramConfig.kt`
+[shared/src/commonMain/kotlin/com/instaconnect/data/InstagramConfig.kt](file:///c:/APLICACIONES/instagram/shared/src/commonMain/kotlin/com/instaconnect/data/InstagramConfig.kt)
 
 ```kotlin
 object InstagramConfig {
@@ -208,11 +208,11 @@ object InstagramConfig {
    - `instagram_business_content_publish`
    - `instagram_business_manage_insights`
 
-> 💡 Si deseas probar la aplicación sin credenciales de Meta, simplemente activa la opción **"Modo Demo"** desde la pantalla de inicio de sesión o mantén `useMockData = true`.
+> **Nota:** Si deseas probar la aplicación sin credenciales de Meta, simplemente activa la opción **"Modo Demo"** desde la pantalla de inicio de sesión o mantén `useMockData = true`.
 
 ---
 
-## 👥 Equipo de Desarrollo
+## Equipo de Desarrollo
 
 Proyecto desarrollado para la materia de **Desarrollo Móvil Multiplataforma** (10° Cuatrimestre) en la **Universidad Politécnica de Chiapas (UPChiapas)**:
 
@@ -225,7 +225,7 @@ Proyecto desarrollado para la materia de **Desarrollo Móvil Multiplataforma** (
 
 ---
 
-## 📄 Licencia y Créditos
+## Licencia y Créditos
 
 Este proyecto fue desarrollado con fines educativos y de investigación sobre arquitecturas multiplataforma con Kotlin y Compose Multiplatform. 
 Las marcas y diseños de Instagram son propiedad de Meta Platforms, Inc.
