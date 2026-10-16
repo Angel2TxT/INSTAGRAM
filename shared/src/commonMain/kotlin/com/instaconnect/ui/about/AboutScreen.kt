@@ -57,11 +57,11 @@ fun AboutScreen() {
                 instagramUsername = "arbe__yy",
                 instagramUrl = "https://www.instagram.com/arbe__yy/",
                 avatarUrl = TeamAvatars.ARBE_YY_AVATAR_BASE64,
-                subject = "Desarrollo Móvil Multiplataforma",
-                semester = "10° Cuatrimestre",
+                subject = "Desarrollo Móvil Integral",
+                semester = "10-A",
                 description = "Diseño de la arquitectura limpia, configuración de Kotlin Multiplatform, modularización en shared y orquestación Gradle.",
                 avatarColor = 0,
-                instagramBio = "Arbey Torres\n67 seguidores • 52 siguiendo • 5 publicaciones\n\n👨‍💻 KMP Architect | Software Engineering\n🚀 10° Cuatrimestre • Univ. Politécnica de Chiapas\n📱 Arquitecturas limpias & Compose Multiplatform",
+                instagramBio = "Arbey Torres\n67 seguidores • 52 siguiendo • 5 publicaciones\n\n👨‍💻 KMP Architect | Software Engineering\n🚀 10-A • Universidad Tecnológica de la Selva\n📱 Arquitecturas limpias & Compose Multiplatform",
                 instagramFollowers = 67,
                 instagramFollowing = 52,
                 instagramPosts = 5
@@ -72,11 +72,11 @@ fun AboutScreen() {
                 instagramUsername = "angll_trujillo",
                 instagramUrl = "https://www.instagram.com/angll_trujillo/",
                 avatarUrl = TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64,
-                subject = "Desarrollo Móvil Multiplataforma",
-                semester = "10° Cuatrimestre",
+                subject = "Desarrollo Móvil Integral",
+                semester = "10-A",
                 description = "Cliente HTTP con Ktor 3, autenticación OAuth 2.0 con Instagram/Meta, serialización JSON y gestión de estado en tiempo real.",
                 avatarColor = 1,
-                instagramBio = "𝐀𝐧𝐠𝐞𝐥 𝐓𝐫𝐮𝐣𝐢𝐥𝐥𝐨\n\"Without a doubt, you’re everything I need.\"\n246 seguidores • 248 siguiendo\n\n⚡ Lead Developer @ GramPulse\n🌐 Ktor 3, OAuth 2.0 & Meta Graph API Integration\n🎓 10° Cuatrimestre • Ing. en Software",
+                instagramBio = "𝐀𝐧𝐠𝐞𝐥 𝐓𝐫𝐮𝐣𝐢𝐥𝐥𝐨\n\"Without a doubt, you’re everything I need.\"\n246 seguidores • 248 siguiendo\n\n⚡ Lead Developer @ GramPulse\n🌐 Ktor 3, OAuth 2.0 & Meta Graph API Integration\n🎓 10-A • Ing. en Desarrollo y Gestión de Software",
                 instagramFollowers = 246,
                 instagramFollowing = 248,
                 instagramPosts = 1
@@ -87,11 +87,11 @@ fun AboutScreen() {
                 instagramUsername = "jzzstyl",
                 instagramUrl = "https://www.instagram.com/jzzstyl/",
                 avatarUrl = TeamAvatars.JZZSTYL_AVATAR_BASE64,
-                subject = "Desarrollo Móvil Multiplataforma",
-                semester = "10° Cuatrimestre",
+                subject = "Desarrollo Móvil Integral",
+                semester = "10-A",
                 description = "Diseño de interfaz glossy dark, diseño de feed, historias interactivas, animaciones y microinteracciones de Instagram.",
                 avatarColor = 2,
-                instagramBio = "Jaffe\n219 seguidores • 86 siguiendo • 0 publicaciones\n\n🎨 UI/UX Designer & Mobile Engineer\n✨ Creando experiencias con Jetpack Compose Multiplatform\n📚 10° Cuatrimestre • Ing. en Software",
+                instagramBio = "Jaffe\n219 seguidores • 86 siguiendo • 0 publicaciones\n\n🎨 UI/UX Designer & Mobile Engineer\n✨ Creando experiencias con Jetpack Compose Multiplatform\n📚 10-A • Ing. en Desarrollo y Gestión de Software",
                 instagramFollowers = 219,
                 instagramFollowing = 86,
                 instagramPosts = 0
@@ -102,11 +102,11 @@ fun AboutScreen() {
                 instagramUsername = "rdy__a",
                 instagramUrl = "https://www.instagram.com/rdy__a/",
                 avatarUrl = TeamAvatars.RDY_A_AVATAR_BASE64,
-                subject = "Desarrollo Móvil Multiplataforma",
-                semester = "10° Cuatrimestre",
+                subject = "Desarrollo Móvil Integral",
+                semester = "10-A",
                 description = "Pruebas multiplataforma en Android y Desktop, control de calidad, testing de integración y despliegue del proyecto.",
                 avatarColor = 3,
-                instagramBio = "Roldan\n3 seguidores • 2 siguiendo • 0 publicaciones\n\n🔍 QA Engineer & Multiplatform Testing\n🧪 Código limpio, cero bugs y rendimiento óptimo\n💻 10° Cuatrimestre • Ing. en Software",
+                instagramBio = "Roldan\n3 seguidores • 2 siguiendo • 0 publicaciones\n\n🔍 QA Engineer & Multiplatform Testing\n🧪 Código limpio, cero bugs y rendimiento óptimo\n💻 10-A • Ing. en Desarrollo y Gestión de Software",
                 instagramFollowers = 3,
                 instagramFollowing = 2,
                 instagramPosts = 0
@@ -301,28 +301,54 @@ private fun SubjectInfoCard(isVisible: Boolean) {
         border = BorderStroke(0.5.dp, DarkColors.Outline)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Outlined.School,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "Información Académica",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(DarkColors.SurfaceVariant)
+                        .border(0.5.dp, DarkColors.Outline, RoundedCornerShape(12.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Outlined.School,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "UNIVERSIDAD TECNOLÓGICA DE LA SELVA",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        letterSpacing = 0.5.sp,
+                        lineHeight = 16.sp
+                    )
+                    Text(
+                        text = "Tecnología de la Información y Comunicación",
+                        fontSize = 11.sp,
+                        color = Color(0xFF8E8E93),
+                        lineHeight = 14.sp
+                    )
+                }
             }
 
+            Spacer(modifier = Modifier.height(14.dp))
+            HorizontalDivider(color = DarkColors.Outline.copy(alpha = 0.6f), thickness = 0.5.dp)
             Spacer(modifier = Modifier.height(12.dp))
 
-            AcademicItem(label = "Asignatura", value = "Desarrollo Móvil Multiplataforma")
-            AcademicItem(label = "Nivel / Grado", value = "10° Cuatrimestre • Ing. en Software")
-            AcademicItem(label = "Stack Tecnológico", value = "Kotlin 2.1, Compose Multiplatform, Ktor 3, Coroutines")
-            AcademicItem(label = "Soporte Multiplataforma", value = "Android & Desktop (JVM) con shared code")
+            AcademicItem(label = "Carrera", value = "Ingeniería en Desarrollo y Gestión de Software")
+            AcademicItem(label = "Asignatura", value = "Desarrollo Móvil Integral")
+            AcademicItem(label = "Unidad de Aprendizaje", value = "2")
+            AcademicItem(label = "Docente", value = "Armando Méndez Morales")
+            AcademicItem(label = "Grado y Grupo", value = "10-A")
+            AcademicItem(label = "Stack Tecnológico", value = "Kotlin Multiplatform • Jetpack Compose • Ktor 3")
         }
     }
 }
@@ -333,12 +359,14 @@ private fun AcademicItem(label: String, value: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top
     ) {
         Text(
             text = label,
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(0.42f)
         )
         Text(
             text = value,
@@ -346,7 +374,7 @@ private fun AcademicItem(label: String, value: String) {
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
             textAlign = TextAlign.End,
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.weight(0.58f).padding(start = 8.dp)
         )
     }
 }

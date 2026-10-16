@@ -255,7 +255,7 @@ class InstagramRepository {
         ),
         InstagramMedia(
             id = "post_5",
-            caption = "🎓 Proyecto integrador para la materia Desarrollo Móvil Multiplataforma. El futuro es multiplataforma! #Universidad #SoftwareEngineering",
+            caption = "🎓 Proyecto integrador para la materia Desarrollo Móvil Integral (Unidad 2). Universidad Tecnológica de la Selva. #UTSelva #SoftwareEngineering",
             mediaType = "IMAGE",
             mediaUrl = "",
             timestamp = "2026-09-20T10:20:00+0000",

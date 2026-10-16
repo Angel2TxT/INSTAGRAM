@@ -415,7 +415,7 @@ fun LoginScreen(
             // Footer
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "10° Cuatrimestre • Desarrollo Móvil Multiplataforma",
+                    text = "10-A • Desarrollo Móvil Integral • UT Selva",
                     fontSize = 11.sp,
                     color = Color(0xFF8E8E93)
                 )
