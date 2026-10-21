@@ -13,3 +13,5 @@ capture
 .cxx
 *.apk
 *.aab
+*.ipa
+selfIdentity.plist

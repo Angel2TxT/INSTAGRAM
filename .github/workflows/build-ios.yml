@@ -1,0 +1,60 @@
+name: Compilar iOS (GramPulse .ipa)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Permisos de ejecución para Gradle
+        run: chmod +x ./gradlew
+
+      - name: Compilar Framework Nativo iOS (KMP Shared)
+        run: ./gradlew :shared:linkReleaseFrameworkIosArm64 --stacktrace
+
+      - name: Instalar XcodeGen y generar proyecto Xcode
+        run: |
+          brew install xcodegen
+          cd iosApp
+          xcodegen generate
+
+      - name: Compilar App de iOS (xcodebuild)
+        run: |
+          xcodebuild -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath iosApp/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            clean build
+
+      - name: Empaquetar como .ipa para instalación directa
+        run: |
+          mkdir -p build_output/Payload
+          cp -r iosApp/DerivedData/Build/Products/Release-iphoneos/GramPulse.app build_output/Payload/
+          cd build_output
+          zip -qr GramPulse.ipa Payload
+          ls -lh GramPulse.ipa
+
+      - name: Subir archivo GramPulse.ipa como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: GramPulse-iOS-ipa
+          path: build_output/GramPulse.ipa
+          retention-days: 14
