@@ -4,6 +4,7 @@ import com.instaconnect.data.models.InstagramMedia
 import com.instaconnect.data.models.InstagramMediaResponse
 import com.instaconnect.data.models.InstagramTokenResponse
 import com.instaconnect.data.models.InstagramUser
+import com.instaconnect.data.models.TeamAvatars
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -37,13 +38,18 @@ class InstagramRepository {
      * Intercambia el authorization code por un access token oficial.
      */
     suspend fun exchangeCodeForToken(code: String): Result<String> {
-        val cleanCode = code.removeSuffix("#_").removeSuffix("%23_").trim()
+        val cleanCode = code.substringBefore('#').substringBefore("%23").removeSuffix("#_").trim()
 
         if (InstagramConfig.useMockData) {
             return Result.success("mock_access_token_12345")
         }
 
         return try {
+            println(">>> [Meta OAuth] Solicitando token a ${InstagramConfig.TOKEN_URL}")
+            println(">>> [Meta OAuth] client_id: ${InstagramConfig.clientId}")
+            println(">>> [Meta OAuth] redirect_uri: ${InstagramConfig.redirectUri}")
+            println(">>> [Meta OAuth] code (limpio): $cleanCode")
+
             val response = httpClient.submitForm(
                 url = InstagramConfig.TOKEN_URL,
                 formParameters = parameters {
@@ -55,14 +61,20 @@ class InstagramRepository {
                 }
             )
 
+            val responseBody = response.bodyAsText()
+            println(">>> [Meta OAuth] Respuesta HTTP ${response.status.value}: $responseBody")
+
             if (response.status.isSuccess()) {
-                val tokenResponse: InstagramTokenResponse = response.body()
+                val tokenResponse: InstagramTokenResponse = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                }.decodeFromString(responseBody)
                 Result.success(tokenResponse.accessToken)
             } else {
-                val errorMsg = response.bodyAsText()
-                Result.failure(Exception("Error de Meta (${response.status.value}): $errorMsg"))
+                Result.failure(Exception("Error de Meta (${response.status.value}): $responseBody"))
             }
         } catch (e: Exception) {
+            println(">>> [Meta OAuth] Excepción en exchangeCodeForToken: ${e.message}")
             Result.failure(e)
         }
     }
@@ -82,12 +94,21 @@ class InstagramRepository {
         }
 
         return try {
-            val user: InstagramUser = httpClient.get(
-                "${InstagramConfig.GRAPH_API_URL}/me"
-            ) {
-                parameter("fields", InstagramConfig.USER_FIELDS)
-                parameter("access_token", effectiveToken)
-            }.body()
+            val user: InstagramUser = try {
+                httpClient.get(
+                    "${InstagramConfig.GRAPH_API_URL}/me"
+                ) {
+                    parameter("fields", InstagramConfig.USER_FIELDS)
+                    parameter("access_token", effectiveToken)
+                }.body()
+            } catch (_: Exception) {
+                httpClient.get(
+                    "${InstagramConfig.GRAPH_API_URL}/me"
+                ) {
+                    parameter("fields", "id,username,account_type,media_count")
+                    parameter("access_token", effectiveToken)
+                }.body()
+            }
 
             // Obtener también los posts recientes y las historias reales de Meta API
             val mediaResult = getUserMedia(effectiveToken)
@@ -172,106 +193,34 @@ class InstagramRepository {
         }
     }
 
-    // ================================================================
-    // Datos de demostración (Mock Data)
-    // ================================================================
-
     fun getMockUser(): InstagramUser = InstagramUser(
         id = "17841405793187218",
-        username = "grampulse_dev",
-        fullName = "GramPulse Developer",
-        biography = "🎓 Estudiantes de Ingeniería en Software\n📱 Desarrollando en Kotlin Multiplatform (KMP)\n✨ 10° Cuatrimestre • Desarrollo Móvil\n📍 México • Meta Graph API Ready",
-        mediaCount = 47,
-        followersCount = 1_542,
-        followingCount = 623,
-        profilePictureUrl = "",
-        accountType = "BUSINESS",
-        website = "https://github.com/grampulse",
+        username = "angll_trujillo",
+        fullName = "Angel Trujillo",
+        biography = "\"Without a doubt, you’re everything I need.\"",
+        mediaCount = 1,
+        followersCount = 246,
+        followingCount = 248,
+        profilePictureUrl = TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64,
+        accountType = "PERSONAL",
+        website = "https://instagram.com/angll_trujillo",
         recentMedia = getMockMedia(),
         stories = getMockStories()
     )
 
-    fun getMockStories(): List<InstagramMedia> = listOf(
-        InstagramMedia(
-            id = "mock_story_1",
-            caption = "🚀 Nueva versión de GramPulse con soporte completo de Stories",
-            mediaType = "IMAGE",
-            mediaUrl = "https://picsum.photos/seed/grampulse_story1/600/1000",
-            thumbnailUrl = "https://picsum.photos/seed/grampulse_story1/300/300",
-            timestamp = "2026-10-09T03:00:00+0000",
-            permalink = "https://instagram.com"
-        ),
-        InstagramMedia(
-            id = "mock_story_2",
-            caption = "✨ Probando la animación de pulso continua en Compose",
-            mediaType = "IMAGE",
-            mediaUrl = "https://picsum.photos/seed/grampulse_story2/600/1000",
-            thumbnailUrl = "https://picsum.photos/seed/grampulse_story2/300/300",
-            timestamp = "2026-10-08T22:30:00+0000",
-            permalink = "https://instagram.com"
-        )
-    )
+    fun getMockStories(): List<InstagramMedia> = emptyList()
 
     fun getMockMedia(): List<InstagramMedia> = listOf(
         InstagramMedia(
-            id = "post_1",
-            caption = "🚀 Lanzamiento oficial de GramPulse! Una sola base de código en Kotlin para Android y Desktop. #KMP #Kotlin #MobileDev #ComposeMultiplatform",
-            mediaType = "IMAGE",
-            mediaUrl = "",
-            timestamp = "2026-10-06T18:30:00+0000",
-            permalink = "https://instagram.com/p/demo1",
-            likesCount = 184,
-            commentsCount = 24
-        ),
-        InstagramMedia(
-            id = "post_2",
-            caption = "💻 Sesión intensiva de código con el equipo universitario. Pulimos arquitectura y consumo de endpoints OAuth. #DevLife #CodingSession #10moCuatrimestre",
+            id = "angel_post_1",
+            caption = "Me entiendes?",
             mediaType = "CAROUSEL_ALBUM",
-            mediaUrl = "",
-            timestamp = "2026-10-03T14:15:00+0000",
-            permalink = "https://instagram.com/p/demo2",
-            likesCount = 210,
-            commentsCount = 31
-        ),
-        InstagramMedia(
-            id = "post_3",
-            caption = "🌟 Jetpack Compose & Compose Multiplatform hacen que el diseño declarativo sea una maravilla visual. #Compose #UIUX #ModernAndroid",
-            mediaType = "IMAGE",
-            mediaUrl = "",
-            timestamp = "2026-09-29T11:00:00+0000",
-            permalink = "https://instagram.com/p/demo3",
-            likesCount = 95,
-            commentsCount = 12
-        ),
-        InstagramMedia(
-            id = "post_4",
-            caption = "🎬 Demo en video: Flujo completo de autenticación y sincronización de datos con Meta Graph API. #InstagramAPI #OAuth #Ktor",
-            mediaType = "VIDEO",
-            mediaUrl = "",
-            timestamp = "2026-09-25T16:45:00+0000",
-            permalink = "https://instagram.com/p/demo4",
-            likesCount = 342,
-            commentsCount = 58
-        ),
-        InstagramMedia(
-            id = "post_5",
-            caption = "🎓 Proyecto integrador para la materia Desarrollo Móvil Multiplataforma. El futuro es multiplataforma! #Universidad #SoftwareEngineering",
-            mediaType = "IMAGE",
-            mediaUrl = "",
-            timestamp = "2026-09-20T10:20:00+0000",
-            permalink = "https://instagram.com/p/demo5",
-            likesCount = 156,
-            commentsCount = 19
-        ),
-        InstagramMedia(
-            id = "post_6",
-            caption = "☕ Café y Kotlin = la combinación perfecta para compilar sin errores en viernes. #CodingLife #DeveloperHumor",
-            mediaType = "IMAGE",
-            mediaUrl = "",
-            timestamp = "2026-09-15T08:30:00+0000",
-            permalink = "https://instagram.com/p/demo6",
-            likesCount = 128,
-            commentsCount = 15
+            mediaUrl = TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64,
+            thumbnailUrl = TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64,
+            timestamp = "2026-10-06T18:30:00+0000",
+            permalink = "https://instagram.com/angll_trujillo",
+            likesCount = 184,
+            commentsCount = 2
         )
     )
 

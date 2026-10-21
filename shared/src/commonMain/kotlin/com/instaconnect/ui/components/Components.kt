@@ -32,8 +32,16 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.instaconnect.data.models.InstagramMedia
 import com.instaconnect.data.models.InstagramUser
+import com.instaconnect.data.models.TeamAvatars
 import com.instaconnect.theme.DarkColors
 import com.instaconnect.theme.InstagramColors
 
@@ -114,17 +122,6 @@ fun InstagramAvatar(
                     color = InstagramColors.Pink
                 )
             }
-        }
-
-        if (hasActiveStory) {
-            Box(
-                modifier = Modifier
-                    .size(size * 0.28f)
-                    .align(Alignment.BottomEnd)
-                    .clip(CircleShape)
-                    .background(Color(0xFF25D366))
-                    .padding(2.dp)
-            )
         }
     }
 }
@@ -315,252 +312,471 @@ fun FilterChipItem(
 }
 
 /**
- * Diálogo modal detallado al abrir un post de Instagram.
+ * Vista modal de pantalla completa para una publicación de Instagram (Feed Post Detail).
+ * Idéntica a la vista oficial de Instagram cuando el creador visualiza su publicación.
  */
 @Composable
 fun PostDetailDialog(
     media: InstagramMedia,
+    user: InstagramUser? = null,
     onDismiss: () -> Unit,
     onLikeToggle: ((isLiked: Boolean) -> Unit)? = null
 ) {
     var isLiked by remember { mutableStateOf(false) }
     var likesCount by remember { mutableStateOf(media.likesCount) }
     var isSaved by remember { mutableStateOf(false) }
+    var isMuted by remember { mutableStateOf(true) }
 
-    val heartScale = remember { Animatable(1f) }
+    val effectiveUrl = media.mediaUrl.ifBlank { media.thumbnailUrl }.ifBlank { TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64 }
+    val username = user?.username?.ifBlank { "angll_trujillo" } ?: "angll_trujillo"
+    val avatarUrl = user?.profilePictureUrl?.ifBlank { TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64 } ?: TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64
 
-    AlertDialog(
+    Dialog(
         onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
-                onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(contentColor = Color.White)
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false
+        )
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.Black
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text("Cerrar", fontWeight = FontWeight.SemiBold)
-            }
-        },
-        containerColor = DarkColors.Surface,
-        shape = RoundedCornerShape(22.dp),
-        title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                // Barra superior: Botón atrás circular + "Publicaciones" + username
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp, bottom = 6.dp, start = 14.dp, end = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Box(
                         modifier = Modifier
-                            .size(34.dp)
+                            .size(36.dp)
                             .clip(CircleShape)
-                            .background(DarkColors.SurfaceVariant)
-                            .border(0.5.dp, DarkColors.Outline, CircleShape),
+                            .background(Color(0xFF262626).copy(alpha = 0.9f))
+                            .clickable { onDismiss() },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            when (media.mediaType) {
-                                "VIDEO" -> Icons.Filled.PlayCircle
-                                "CAROUSEL_ALBUM" -> Icons.Filled.Collections
-                                else -> Icons.Filled.PhotoCamera
-                            },
-                            contentDescription = null,
+                            Icons.AutoMirrored.Filled.ArrowBackIos,
+                            contentDescription = "Atrás",
                             tint = Color.White,
-                            modifier = Modifier.size(17.dp)
+                            modifier = Modifier
+                                .size(18.dp)
+                                .offset(x = 2.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = when (media.mediaType) {
-                            "VIDEO" -> "Video / Reel"
-                            "CAROUSEL_ALBUM" -> "Álbum Carrusel"
-                            else -> "Publicación"
-                        },
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
-                    )
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Publicaciones",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = username,
+                            fontSize = 12.sp,
+                            color = Color(0xFFA8A8A8)
+                        )
+                    }
+
+                    // Spacer equilibrador
+                    Spacer(modifier = Modifier.size(36.dp))
                 }
 
-                // Badge de tipo estilo iOS
-                Box(
+                // Fila del autor con música y [E]
+                Row(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(DarkColors.SurfaceVariant)
-                        .border(0.5.dp, DarkColors.Outline, RoundedCornerShape(8.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = media.mediaType,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFFA1A1A6)
-                    )
-                }
-            }
-        },
-        text = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                // Vista ampliada con la foto real o gradiente dinámico
-                val effectiveUrl = media.mediaUrl.ifBlank { media.thumbnailUrl }
-                if (effectiveUrl.isNotBlank()) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(260.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(DarkColors.SurfaceVariant),
-                        contentAlignment = Alignment.Center
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF262626))
                     ) {
                         RemoteImage(
-                            url = effectiveUrl,
-                            contentDescription = media.caption,
+                            url = avatarUrl,
+                            contentDescription = username,
                             modifier = Modifier.fillMaxSize(),
-                            errorPlaceholder = {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        when (media.mediaType) {
-                                            "VIDEO" -> Icons.Filled.PlayArrow
-                                            "CAROUSEL_ALBUM" -> Icons.Filled.CollectionsBookmark
-                                            else -> Icons.Outlined.Image
-                                        },
-                                        contentDescription = null,
-                                        tint = Color.White.copy(alpha = 0.85f),
-                                        modifier = Modifier.size(56.dp)
-                                    )
-                                }
-                            }
+                            contentScale = ContentScale.Crop
                         )
                     }
-                } else {
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = username,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Filled.MusicNote,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(11.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Robot95 • Pluma Roja",
+                                fontSize = 11.sp,
+                                color = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .background(Color(0xFF737373))
+                                    .padding(horizontal = 3.dp, vertical = 0.5.dp)
+                            ) {
+                                Text(
+                                    text = "E",
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+                            }
+                        }
+                    }
+
+                    Icon(
+                        Icons.Filled.MoreHoriz,
+                        contentDescription = "Opciones",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clickable { }
+                    )
+                }
+
+                // Foto de la publicación con badge 1/4 y botón mute
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(0.82f)
+                        .background(Color.Black),
+                    contentAlignment = Alignment.Center
+                ) {
+                    RemoteImage(
+                        url = effectiveUrl,
+                        contentDescription = media.caption,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    // Badge 1/4 estilo iOS
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(
-                                Brush.linearGradient(
-                                    listOf(
-                                        InstagramColors.Purple.copy(alpha = 0.4f),
-                                        InstagramColors.DeepPurple.copy(alpha = 0.6f),
-                                        InstagramColors.Pink.copy(alpha = 0.4f)
-                                    )
-                                )
-                            ),
+                            .align(Alignment.TopEnd)
+                            .padding(12.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.Black.copy(alpha = 0.65f))
+                            .padding(horizontal = 9.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "1/4",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                    // Botón de silencio en la esquina inferior derecha
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(12.dp)
+                            .size(28.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.7f))
+                            .clickable { isMuted = !isMuted },
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                when (media.mediaType) {
-                                    "VIDEO" -> Icons.Filled.PlayArrow
-                                    "CAROUSEL_ALBUM" -> Icons.Filled.CollectionsBookmark
-                                    else -> Icons.Outlined.Image
-                                },
-                                contentDescription = null,
-                                tint = Color.White.copy(alpha = 0.85f),
-                                modifier = Modifier.size(56.dp)
-                            )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                text = "Contenido en alta resolución",
-                                fontSize = 12.sp,
-                                color = Color.White.copy(alpha = 0.7f)
-                            )
-                        }
+                        Icon(
+                            if (isMuted) Icons.Filled.VolumeOff else Icons.Filled.VolumeUp,
+                            contentDescription = "Audio",
+                            tint = Color.White,
+                            modifier = Modifier.size(15.dp)
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Fila de acciones interactivas (Like, Comment, Share, Save)
+                // Barra de estadísticas del creador (Insights Bar)
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable { }
+                    ) {
+                        Icon(
+                            Icons.Outlined.Visibility,
+                            contentDescription = null,
+                            tint = Color(0xFF0095F6),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "2.4 mil • Ver estadísticas",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF0095F6)
+                        )
+                    }
+
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF0095F6),
+                            contentColor = Color.White
+                        ),
+                        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 0.dp),
+                        modifier = Modifier.height(34.dp)
+                    ) {
+                        Text(
+                            text = "Promocionar publicación",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+
+                // Puntos de paginación del carrusel (4 dots)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF0095F6))
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(5.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF385185))
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(5.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF385185))
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(5.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF385185))
+                    )
+                }
+
+                // Barra de iconos de interacción (Like, Comment, Share, Save)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp, vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Like interactivo
                         IconButton(
                             onClick = {
                                 isLiked = !isLiked
                                 if (isLiked) likesCount++ else likesCount--
                                 onLikeToggle?.invoke(isLiked)
-                            },
-                            modifier = Modifier.scale(heartScale.value)
+                            }
                         ) {
                             Icon(
                                 if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                                 contentDescription = "Me gusta",
-                                tint = if (isLiked) InstagramColors.Red else Color.White,
+                                tint = if (isLiked) Color(0xFFFF3040) else Color.White,
                                 modifier = Modifier.size(26.dp)
                             )
                         }
 
-                        // Comentario
-                        IconButton(onClick = {}) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .clickable { }
+                                .padding(horizontal = 4.dp, vertical = 8.dp)
+                        ) {
                             Icon(
                                 Icons.Outlined.ModeComment,
                                 contentDescription = "Comentar",
                                 tint = Color.White,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(23.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "${media.commentsCount}",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
                             )
                         }
 
-                        // Compartir
-                        IconButton(onClick = {}) {
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        IconButton(onClick = { }) {
+                            Icon(
+                                Icons.Filled.Repeat,
+                                contentDescription = "Republicar",
+                                tint = Color.White,
+                                modifier = Modifier.size(23.dp)
+                            )
+                        }
+
+                        IconButton(onClick = { }) {
                             Icon(
                                 Icons.AutoMirrored.Outlined.Send,
                                 contentDescription = "Enviar",
                                 tint = Color.White,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(23.dp)
                             )
                         }
                     }
 
-                    // Guardar
                     IconButton(onClick = { isSaved = !isSaved }) {
                         Icon(
                             if (isSaved) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
                             contentDescription = "Guardar",
-                            tint = if (isSaved) InstagramColors.Yellow else Color.White,
+                            tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
                     }
                 }
 
-                // Likes count
-                Text(
-                    text = "${formatCount(likesCount)} Me gusta",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                // Fila de Me gusta ("Les gusta a francogalvezc y otros")
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(16.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF555555))
+                                .border(1.dp, Color.Black, CircleShape)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .offset(x = (-5).dp)
+                                .size(16.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF888888))
+                                .border(1.dp, Color.Black, CircleShape)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .offset(x = (-10).dp)
+                                .size(16.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFFAAAAAA))
+                                .border(1.dp, Color.Black, CircleShape)
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.width(2.dp))
 
-                // Caption
-                Text(
-                    text = media.caption,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
-                    lineHeight = 18.sp
-                )
+                    Text(
+                        text = buildAnnotatedString {
+                            append("Les gusta a ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("francogalvezc")
+                            }
+                            append(" y ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("otros")
+                            }
+                        },
+                        fontSize = 13.sp,
+                        color = Color.White
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                // Pie de foto (Caption): angll_trujillo Me entiendes?
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(username)
+                            }
+                            append(" ")
+                            append(media.caption.ifBlank { "Me entiendes?" })
+                        },
+                        fontSize = 13.sp,
+                        color = Color.White,
+                        lineHeight = 17.sp
+                    )
+                }
 
-                // Comentarios
-                Text(
-                    text = "Ver los ${media.commentsCount} comentarios",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                // Comentario destacado: freddy._cord Tirando mas mole que arroz el tio 🔥 ❤️
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("freddy._cord")
+                            }
+                            append(" ")
+                            append("Tirando mas mole que arroz el tio 🔥")
+                        },
+                        fontSize = 13.sp,
+                        color = Color.White,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        Icons.Filled.Favorite,
+                        contentDescription = "Me gusta comentario",
+                        tint = Color(0xFFFF3040),
+                        modifier = Modifier.size(12.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
             }
         }
-    )
+    }
 }
 
 /**

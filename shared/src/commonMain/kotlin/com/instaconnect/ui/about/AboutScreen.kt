@@ -53,60 +53,60 @@ fun AboutScreen() {
         listOf(
             Developer(
                 name = "Arbey Esteban Torres Hernández",
-                role = "Arquitectura KMP & Estructura del Proyecto",
+                role = "Arquitectura KMP & Estructura",
                 instagramUsername = "arbe__yy",
                 instagramUrl = "https://www.instagram.com/arbe__yy/",
                 avatarUrl = TeamAvatars.ARBE_YY_AVATAR_BASE64,
                 subject = "Desarrollo Móvil Multiplataforma",
                 semester = "10° Cuatrimestre",
-                description = "Diseño de la arquitectura limpia, configuración de Kotlin Multiplatform, modularización en shared y orquestación Gradle.",
+                description = "Arquitectura limpia y modularización del código compartido en shared.",
                 avatarColor = 0,
-                instagramBio = "Arbey Torres\n67 seguidores • 52 siguiendo • 5 publicaciones\n\n👨‍💻 KMP Architect | Software Engineering\n🚀 10° Cuatrimestre • Univ. Politécnica de Chiapas\n📱 Arquitecturas limpias & Compose Multiplatform",
+                instagramBio = "Software Engineering • KMP & Clean Architecture",
                 instagramFollowers = 67,
                 instagramFollowing = 52,
                 instagramPosts = 5
             ),
             Developer(
                 name = "Angel Emmanuel Trujillo López",
-                role = "Lead Developer & Meta Graph API Integration",
+                role = "Lead Developer & Meta Graph API",
                 instagramUsername = "angll_trujillo",
                 instagramUrl = "https://www.instagram.com/angll_trujillo/",
                 avatarUrl = TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64,
                 subject = "Desarrollo Móvil Multiplataforma",
                 semester = "10° Cuatrimestre",
-                description = "Cliente HTTP con Ktor 3, autenticación OAuth 2.0 con Instagram/Meta, serialización JSON y gestión de estado en tiempo real.",
+                description = "Autenticación OAuth 2.0 con Instagram/Meta y networking con Ktor 3.",
                 avatarColor = 1,
-                instagramBio = "𝐀𝐧𝐠𝐞𝐥 𝐓𝐫𝐮𝐣𝐢𝐥𝐥𝐨\n\"Without a doubt, you’re everything I need.\"\n246 seguidores • 248 siguiendo\n\n⚡ Lead Developer @ GramPulse\n🌐 Ktor 3, OAuth 2.0 & Meta Graph API Integration\n🎓 10° Cuatrimestre • Ing. en Software",
+                instagramBio = "\"Without a doubt, you’re everything I need.\"",
                 instagramFollowers = 246,
                 instagramFollowing = 248,
                 instagramPosts = 1
             ),
             Developer(
                 name = "Carlos Jafet Domínguez López",
-                role = "UI/UX Designer & Compose Specialist",
+                role = "UI/UX & Frontend Compose",
                 instagramUsername = "jzzstyl",
                 instagramUrl = "https://www.instagram.com/jzzstyl/",
                 avatarUrl = TeamAvatars.JZZSTYL_AVATAR_BASE64,
                 subject = "Desarrollo Móvil Multiplataforma",
                 semester = "10° Cuatrimestre",
-                description = "Diseño de interfaz glossy dark, diseño de feed, historias interactivas, animaciones y microinteracciones de Instagram.",
+                description = "Diseño de interfaz de usuario, animaciones y componentes en Compose.",
                 avatarColor = 2,
-                instagramBio = "Jaffe\n219 seguidores • 86 siguiendo • 0 publicaciones\n\n🎨 UI/UX Designer & Mobile Engineer\n✨ Creando experiencias con Jetpack Compose Multiplatform\n📚 10° Cuatrimestre • Ing. en Software",
+                instagramBio = "UI/UX Designer • Compose Multiplatform • Mobile Engineering",
                 instagramFollowers = 219,
                 instagramFollowing = 86,
                 instagramPosts = 0
             ),
             Developer(
                 name = "Roldan Aldemar Arcos Gómez",
-                role = "Backend, QA & Multiplatform Deployment",
+                role = "QA & Multiplatform Testing",
                 instagramUsername = "rdy__a",
                 instagramUrl = "https://www.instagram.com/rdy__a/",
                 avatarUrl = TeamAvatars.RDY_A_AVATAR_BASE64,
                 subject = "Desarrollo Móvil Multiplataforma",
                 semester = "10° Cuatrimestre",
-                description = "Pruebas multiplataforma en Android y Desktop, control de calidad, testing de integración y despliegue del proyecto.",
+                description = "Control de calidad, pruebas de integración y despliegue del proyecto.",
                 avatarColor = 3,
-                instagramBio = "Roldan\n3 seguidores • 2 siguiendo • 0 publicaciones\n\n🔍 QA Engineer & Multiplatform Testing\n🧪 Código limpio, cero bugs y rendimiento óptimo\n💻 10° Cuatrimestre • Ing. en Software",
+                instagramBio = "QA Engineer • Multiplatform Testing • Code Quality",
                 instagramFollowers = 3,
                 instagramFollowing = 2,
                 instagramPosts = 0
@@ -128,7 +128,7 @@ fun AboutScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(DarkColors.Background)
     ) {
         Column(
             modifier = Modifier
@@ -296,58 +296,45 @@ private fun SubjectInfoCard(isVisible: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = DarkColors.Surface),
         border = BorderStroke(0.5.dp, DarkColors.Outline)
     ) {
-        Column(modifier = Modifier.padding(18.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF2C2C2E)),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     Icons.Outlined.School,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier.size(20.dp)
                 )
-                Spacer(modifier = Modifier.width(10.dp))
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Información Académica",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    text = "Desarrollo Móvil Multiplataforma",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
+                Text(
+                    text = "10° Cuatrimestre • Kotlin Multiplatform & Meta API",
+                    fontSize = 12.sp,
+                    color = Color(0xFF8E8E93)
+                )
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            AcademicItem(label = "Asignatura", value = "Desarrollo Móvil Multiplataforma")
-            AcademicItem(label = "Nivel / Grado", value = "10° Cuatrimestre • Ing. en Software")
-            AcademicItem(label = "Stack Tecnológico", value = "Kotlin 2.1, Compose Multiplatform, Ktor 3, Coroutines")
-            AcademicItem(label = "Soporte Multiplataforma", value = "Android & Desktop (JVM) con shared code")
         }
-    }
-}
-
-@Composable
-private fun AcademicItem(label: String, value: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = value,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.White,
-            textAlign = TextAlign.End,
-            modifier = Modifier.padding(start = 12.dp)
-        )
     }
 }
 
@@ -518,7 +505,7 @@ private fun DeveloperCard(
 }
 
 /**
- * Modal detallado del perfil de Instagram del desarrollador.
+ * Modal detallado y limpio del perfil de Instagram del desarrollador.
  */
 @Composable
 private fun DeveloperInstagramModal(
@@ -531,112 +518,12 @@ private fun DeveloperInstagramModal(
     val gradientList = InstagramColors.AvatarColors.getOrElse(developer.avatarColor) {
         InstagramColors.AvatarColors[0]
     }
-
-    var selectedPostTopic by remember { mutableStateOf<String?>(null) }
-
     val uriHandler = LocalUriHandler.current
-
-    val devHighlights = remember(developer.name) {
-        when {
-            developer.name.contains("Arbey", ignoreCase = true) ->
-                listOf("Arquitectura 🏛️", "KMP 🚀", "Gradle ⚙️", "Clean Code 💻")
-            developer.name.contains("Angel", ignoreCase = true) ->
-                listOf("Lead Dev 👑", "Meta API 🌐", "Ktor 3 ⚡", "OAuth 2.0 🔑")
-            developer.name.contains("Carlos", ignoreCase = true) ->
-                listOf("UI/UX 🎨", "Compose 📱", "Glossy ✨", "Dark Mode 🌙")
-            developer.name.contains("Roldan", ignoreCase = true) ->
-                listOf("QA Testing 🔍", "CI/CD 🚀", "Android 🤖", "Desktop 🖥️")
-            else ->
-                listOf("Proyectos 🚀", "Tech Stack 💻", "Universidad 🎓", "Setup 🖥️")
-        }
-    }
-
-    val devProjectPosts = remember(developer.name) {
-        when {
-            developer.name.contains("Arbey", ignoreCase = true) -> listOf(
-                "Estructura modular Kotlin Multiplatform en shared",
-                "Configuración Gradle, dependencias y targets KMP",
-                "Arquitectura Repository y separación de capas",
-                "Integración de build logic multiplataforma",
-                "Gestión de modelos de datos compartidos",
-                "Optimización de compilación Android & JVM"
-            )
-            developer.name.contains("Angel", ignoreCase = true) -> listOf(
-                "Cliente HTTP con Ktor 3 y serialización JSON",
-                "Flujo OAuth 2.0 e intercambio de código por Token",
-                "Consumo de Meta Graph API (/me, /media, /stories)",
-                "Gestión reactiva de estado de sesión y repositorios",
-                "Peticiones de feed, métricas y detalles en tiempo real",
-                "Manejo seguro de tokens y autorización persistente"
-            )
-            developer.name.contains("Carlos", ignoreCase = true) -> listOf(
-                "Diseño visual glossy dark estilo Apple y Meta",
-                "Componentes interactivos de Compose Multiplatform",
-                "Feed, Stories bar, diálogos y transiciones fluidas",
-                "Paleta de colores, tipografía y micro-animaciones",
-                "Diseño responsivo para móvil Android y Desktop",
-                "Efectos glassmorphism y barras de navegación"
-            )
-            developer.name.contains("Roldan", ignoreCase = true) -> listOf(
-                "Pruebas multiplataforma en emuladores y JVM",
-                "Validación de interoperabilidad Android y Desktop",
-                "QA de flujos de autenticación y carga de medios",
-                "Detección y corrección de bugs de renderizado",
-                "Testing de rendimiento y consumo de memoria",
-                "Despliegue y empaquetado final de la solución"
-            )
-            else -> listOf(
-                "Arquitectura KMP y estructura limpia en shared",
-                "Integración de autenticación OAuth y tokens",
-                "Diseño de interfaz declarativa con Compose",
-                "Manejo de estados reactivos y navegación",
-                "Consumo y serialización de Graph API de Meta",
-                "Optimizaciones de compilación y empaquetado"
-            )
-        }
-    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                if (developer.instagramUrl.isNotBlank()) {
-                    Button(
-                        onClick = {
-                            uriHandler.openUri(developer.instagramUrl)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White,
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.weight(1.1f),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
-                    ) {
-                        Icon(
-                            Icons.Outlined.OpenInBrowser,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = Color.Black
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text("Ver Instagram", color = Color.Black, fontWeight = FontWeight.Bold, maxLines = 1)
-                    }
-                }
-                OutlinedButton(
-                    onClick = onDismiss,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
-                    modifier = if (developer.instagramUrl.isNotBlank()) Modifier.weight(0.9f) else Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
-                ) {
-                    Text("Cerrar", maxLines = 1)
-                }
-            }
-        },
+        confirmButton = {},
+        dismissButton = {},
         containerColor = DarkColors.Surface,
         shape = RoundedCornerShape(24.dp),
         title = {
@@ -657,7 +544,7 @@ private fun DeveloperInstagramModal(
                         Icons.Filled.CameraAlt,
                         contentDescription = null,
                         tint = InstagramColors.Pink,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -666,34 +553,48 @@ private fun DeveloperInstagramModal(
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        Icons.Filled.Verified,
+                        contentDescription = null,
+                        tint = Color(0xFF0095F6),
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
-                Icon(
-                    Icons.Filled.Verified,
-                    contentDescription = null,
-                    tint = InstagramColors.Purple,
-                    modifier = Modifier.size(18.dp)
-                )
+
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = "Cerrar",
+                        tint = Color(0xFF8E8E93),
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         },
         text = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
+                    .padding(top = 4.dp)
             ) {
-                // Header con avatar y métricas
+                // Header: Avatar grande + Métricas oficiales
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     InstagramAvatar(
                         name = developer.name,
-                        size = 70.dp,
+                        size = 72.dp,
                         imageUrl = developer.avatarUrl,
                         gradientColors = gradientList,
-                        fontSize = 24
+                        fontSize = 24,
+                        borderWidth = 2.dp
                     )
-                    Spacer(modifier = Modifier.width(14.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
                     Row(
                         modifier = Modifier.weight(1f),
                         horizontalArrangement = Arrangement.SpaceAround
@@ -706,40 +607,43 @@ private fun DeveloperInstagramModal(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Nombre y rol
+                // Nombre completo
                 Text(
                     text = developer.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                     color = Color.White
                 )
+
+                // Rol
                 Text(
                     text = developer.role,
                     fontSize = 12.sp,
-                    color = InstagramColors.Orange,
+                    color = Color(0xFF8E8E93),
                     fontWeight = FontWeight.Medium
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                // Bio
-                Text(
-                    text = developer.instagramBio,
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
-                )
+                // Bio limpia auténtica
+                if (developer.instagramBio.isNotBlank()) {
+                    Text(
+                        text = developer.instagramBio,
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                        color = Color.White.copy(alpha = 0.9f)
+                    )
+                    Spacer(modifier = Modifier.height(14.dp))
+                }
 
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Botones interactivos "Seguir" y "Abrir en Instagram"
+                // Botones principales estilo Instagram: "Seguir" y "Abrir en Instagram"
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Button(
                         onClick = onToggleFollow,
-                        modifier = Modifier.weight(1f).height(36.dp),
+                        modifier = Modifier.weight(1f).height(38.dp),
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (isFollowing) DarkColors.SurfaceVariant else Color.White,
@@ -760,7 +664,7 @@ private fun DeveloperInstagramModal(
                                 uriHandler.openUri(developer.instagramUrl)
                             }
                         },
-                        modifier = Modifier.weight(1f).height(36.dp),
+                        modifier = Modifier.weight(1f).height(38.dp),
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = DarkColors.SurfaceVariant
@@ -786,103 +690,36 @@ private fun DeveloperInstagramModal(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Historias destacadas del perfil
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                // Tarjeta minimalista de contribución directa al proyecto
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF1C1C1E))
+                        .padding(12.dp)
                 ) {
-                    items(devHighlights) { highlight ->
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Box(
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                                    .background(Brush.sweepGradient(gradientList))
-                                    .padding(2.dp)
-                                    .clip(CircleShape)
-                                    .background(DarkColors.SurfaceVariant),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    Icons.Outlined.Star,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(4.dp))
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Outlined.Code,
+                                contentDescription = null,
+                                tint = InstagramColors.Pink,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = highlight,
-                                fontSize = 10.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                text = "Contribución en GramPulse",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
                             )
                         }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Contribuciones y publicaciones en el proyecto
-                Text(
-                    text = "Aportes al Proyecto GramPulse",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Grid 3x2 de contribuciones simuladas
-                val chunkedPosts = devProjectPosts.chunked(3)
-                chunkedPosts.forEach { rowItems ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 3.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        rowItems.forEach { topic ->
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1f)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(
-                                        Brush.linearGradient(
-                                            listOf(
-                                                gradientList.first().copy(alpha = 0.5f),
-                                                gradientList.last().copy(alpha = 0.3f)
-                                            )
-                                        )
-                                    )
-                                    .clickable { selectedPostTopic = topic },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    Icons.Outlined.Code,
-                                    contentDescription = null,
-                                    tint = Color.White.copy(alpha = 0.8f),
-                                    modifier = Modifier.size(22.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                if (selectedPostTopic != null) {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(DarkColors.SurfaceVariant)
-                            .padding(10.dp)
-                    ) {
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "📌 Tarea: $selectedPostTopic",
+                            text = developer.description,
                             fontSize = 12.sp,
-                            color = InstagramColors.LightYellow,
-                            fontWeight = FontWeight.Medium
+                            color = Color(0xFFA1A1A6),
+                            lineHeight = 16.sp
                         )
                     }
                 }

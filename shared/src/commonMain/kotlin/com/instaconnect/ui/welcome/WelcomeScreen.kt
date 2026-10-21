@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.instaconnect.data.InstagramConfig
 import com.instaconnect.data.models.InstagramUser
 import com.instaconnect.theme.DarkColors
 import com.instaconnect.ui.components.InstagramAvatar
@@ -80,41 +79,6 @@ fun WelcomeScreen(
             .fillMaxSize()
             .background(DarkColors.Background)
     ) {
-        // Halo de luz superior glossy animado
-        Box(
-            modifier = Modifier
-                .size(360.dp)
-                .align(Alignment.TopCenter)
-                .offset(y = (-100).dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.12f * pulseGlow),
-                            Color(0xFFE5E5EA).copy(alpha = 0.05f * pulseGlow),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
-        // Halo de luz lateral inferior
-        Box(
-            modifier = Modifier
-                .size(280.dp)
-                .align(Alignment.BottomEnd)
-                .offset(x = 80.dp, y = 80.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.08f * pulseGlow),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()

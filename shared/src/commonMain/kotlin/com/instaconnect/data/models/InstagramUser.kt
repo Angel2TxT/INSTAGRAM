@@ -2,6 +2,7 @@ package com.instaconnect.data.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 /**
  * Representa un usuario de Instagram con sus datos de perfil.
@@ -57,6 +58,7 @@ data class InstagramMediaResponse(
     val data: List<InstagramMedia> = emptyList()
 )
 
+
 /**
  * Respuesta del token de Instagram.
  */
@@ -65,5 +67,5 @@ data class InstagramTokenResponse(
     @SerialName("access_token")
     val accessToken: String = "",
     @SerialName("user_id")
-    val userId: Long = 0
+    val userId: JsonElement? = null
 )

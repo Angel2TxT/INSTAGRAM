@@ -6,7 +6,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -17,417 +16,275 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.instaconnect.data.InstagramConfig
-import com.instaconnect.theme.AppleColors
+import com.instaconnect.data.models.TeamAvatars
 import com.instaconnect.theme.DarkColors
+import com.instaconnect.theme.InstagramColors
+import com.instaconnect.ui.components.RemoteImage
 
 /**
- * Pantalla de inicio de sesión estilo Apple (Minimalista, Negro y Blanco).
- * Diseño limpio con acabados en titanio y contraste puro.
+ * Pantalla de inicio de sesión oficial y exclusiva de Instagram.
+ * Sin campos manuales de correo o contraseña: solo autenticación nativa de Instagram.
  */
 @Composable
 fun LoginScreen(
-    onNormalLogin: (email: String, password: String) -> Unit,
+    onNormalLogin: (email: String, password: String) -> Unit = { _, _ -> },
     onInstagramLogin: () -> Unit
 ) {
-    var usernameOrEmail by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
     var showApiSettingsDialog by remember { mutableStateOf(false) }
-
-
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(DarkColors.Background)
     ) {
-        // Contenido principal
+        // Botón discreto de configuración en la esquina superior derecha
+        IconButton(
+            onClick = { showApiSettingsDialog = true },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 16.dp, end = 16.dp)
+                .size(36.dp)
+        ) {
+            Icon(
+                Icons.Outlined.Settings,
+                contentDescription = "Configuración API",
+                tint = Color(0xFF8E8E93),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        // Contenido principal centrado
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
-            // Logo estilizado minimalista Apple
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    modifier = Modifier
-                        .size(72.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(DarkColors.SurfaceVariant)
-                        .border(0.5.dp, Color(0xFF38383A), RoundedCornerShape(20.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Outlined.CameraAlt,
-                        contentDescription = "Logo",
-                        modifier = Modifier.size(34.dp),
-                        tint = Color.White
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                Text(
-                    text = "GramPulse",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    letterSpacing = (-0.5).sp
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Inicia sesión con tu cuenta de Instagram",
-                    fontSize = 14.sp,
-                    color = Color(0xFF8E8E93),
-                    letterSpacing = (-0.2).sp
+            // Ícono emblemático de Instagram con gradiente auténtico
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                Color(0xFF833AB4),
+                                Color(0xFFC13584),
+                                Color(0xFFE1306C),
+                                Color(0xFFFD1D1D),
+                                Color(0xFFF77737)
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Outlined.PhotoCamera,
+                    contentDescription = "Instagram",
+                    modifier = Modifier.size(42.dp),
+                    tint = Color.White
                 )
             }
 
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-            // Tarjeta principal estilo iOS
+            Text(
+                text = "Instagram",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                letterSpacing = (-0.5).sp
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = "Conéctate de forma rápida y segura",
+                fontSize = 14.sp,
+                color = Color(0xFF8E8E93),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(34.dp))
+
+            // Tarjeta de inicio de sesión directo estilo Instagram
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(22.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = DarkColors.Surface
-                ),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = DarkColors.Surface),
                 border = BorderStroke(0.5.dp, DarkColors.Outline)
             ) {
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 28.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Avatar del usuario de Instagram con borde gradiente
+                    Box(
+                        modifier = Modifier
+                            .size(86.dp)
+                            .clip(CircleShape)
+                            .border(
+                                2.dp,
+                                Brush.linearGradient(
+                                    listOf(
+                                        Color(0xFF833AB4),
+                                        Color(0xFFE1306C),
+                                        Color(0xFFF77737)
+                                    )
+                                ),
+                                CircleShape
+                            )
+                            .padding(4.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF262626)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        RemoteImage(
+                            url = TeamAvatars.ANGLL_TRUJILLO_AVATAR_BASE64,
+                            contentDescription = "Avatar",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    Text(
+                        text = "angll_trujillo",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.height(3.dp))
+
+                    Text(
+                        text = "Cuenta de Instagram",
+                        fontSize = 12.sp,
+                        color = Color(0xFFA8A8A8)
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Botón Principal: Continuar como @angll_trujillo
+                    Button(
+                        onClick = {
+                            isLoading = true
+                            onNormalLogin("angll_trujillo", "password")
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(22.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .height(48.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF0095F6),
+                            contentColor = Color.White
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
+                        enabled = !isLoading
+                    ) {
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text(
+                                text = "Continuar como @angll_trujillo",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Botón Secundario: Iniciar sesión con otra cuenta (Meta OAuth Oficial)
+                    OutlinedButton(
+                        onClick = { onInstagramLogin() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(1.dp, Color(0xFF38383A)),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White
+                        ),
+                        enabled = !isLoading
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Iniciar Sesión",
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.White
-                            )
-
-                            // Botón de configuración de API
-                            IconButton(
-                                onClick = { showApiSettingsDialog = true },
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                Icon(
-                                    Icons.Outlined.Settings,
-                                    contentDescription = "Configuración API",
-                                    tint = Color(0xFF8E8E93),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(18.dp))
-
-                        // Campo Usuario de Instagram / Correo / Teléfono
-                        OutlinedTextField(
-                            value = usernameOrEmail,
-                            onValueChange = {
-                                usernameOrEmail = it
-                                errorMessage = null
-                            },
-                            label = { Text("Usuario, correo o teléfono") },
-                            placeholder = { Text("@usuario o correo", color = Color(0xFF636366), fontSize = 13.sp) },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.Person,
-                                    contentDescription = null,
-                                    tint = Color(0xFF8E8E93),
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = DarkColors.SurfaceVariant,
-                                unfocusedContainerColor = DarkColors.SurfaceVariant,
-                                focusedBorderColor = Color.White,
-                                unfocusedBorderColor = Color(0xFF2C2C2E),
-                                focusedLabelColor = Color.White,
-                                unfocusedLabelColor = Color(0xFF8E8E93),
-                                cursorColor = Color.White,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
-                            ),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                            singleLine = true
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Campo Contraseña
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = {
-                                password = it
-                                errorMessage = null
-                            },
-                            label = { Text("Contraseña") },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.Lock,
-                                    contentDescription = null,
-                                    tint = Color(0xFF8E8E93),
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Icon(
-                                        if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                        contentDescription = "Ver contraseña",
-                                        tint = Color(0xFF8E8E93),
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = DarkColors.SurfaceVariant,
-                                unfocusedContainerColor = DarkColors.SurfaceVariant,
-                                focusedBorderColor = Color.White,
-                                unfocusedBorderColor = Color(0xFF2C2C2E),
-                                focusedLabelColor = Color.White,
-                                unfocusedLabelColor = Color(0xFF8E8E93),
-                                cursorColor = Color.White,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
-                            ),
-                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            singleLine = true
-                        )
-
-                        // Mensaje de error
-                        AnimatedVisibility(
-                            visible = errorMessage != null,
-                            enter = fadeIn() + expandVertically(),
-                            exit = fadeOut() + shrinkVertically()
-                        ) {
-                            Text(
-                                text = errorMessage ?: "",
-                                color = Color(0xFFFF453A),
-                                fontSize = 12.sp,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp),
-                                textAlign = TextAlign.Center
-                            )
-                        }
-
-                        // Botón de rellenar demo
-                        TextButton(
-                            onClick = {
-                                usernameOrEmail = "angll_trujillo"
-                                password = "password2026"
-                                errorMessage = null
-                            },
-                            modifier = Modifier.align(Alignment.End)
-                        ) {
-                            Text(
-                                text = "Autocompletar @angll_trujillo",
-                                fontSize = 11.sp,
-                                color = Color(0xFF8E8E93)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(6.dp))
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        // Botón Principal: Inicio de Sesión Oficial con Instagram OAuth 2.0
-                        Button(
-                            onClick = { onInstagramLogin() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.White
-                            ),
-                            contentPadding = PaddingValues(0.dp),
-                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-                            enabled = !isLoading
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        Brush.horizontalGradient(
-                                            listOf(
-                                                Color(0xFF833AB4),
-                                                Color(0xFFC13584),
-                                                Color(0xFFE1306C),
-                                                Color(0xFFFD1D1D),
-                                                Color(0xFFF77737)
-                                            )
-                                        )
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Icon(
-                                        Icons.Filled.CameraAlt,
-                                        contentDescription = "Instagram",
-                                        tint = Color.White,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(10.dp))
-                                    Text(
-                                        "Continuar con Instagram",
-                                        color = Color.White,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 15.sp,
-                                        letterSpacing = (-0.2).sp
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Tarjeta informativa de seguridad OAuth 2.0 Oficial
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(DarkColors.SurfaceVariant.copy(alpha = 0.7f))
-                                .border(0.5.dp, Color(0xFF2C2C2E), RoundedCornerShape(10.dp))
-                                .padding(horizontal = 12.dp, vertical = 9.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                Icons.Filled.Lock,
-                                contentDescription = "Seguridad",
-                                tint = Color(0xFF34C759),
-                                modifier = Modifier.size(15.dp)
+                                Icons.Outlined.PhotoCamera,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(17.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Autenticación segura en servidores oficiales de Meta",
-                                fontSize = 11.sp,
-                                color = Color(0xFF8E8E93),
-                                letterSpacing = (-0.1).sp
+                                text = "Iniciar sesión con otra cuenta",
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 13.sp
                             )
-                        }
-
-                        Spacer(modifier = Modifier.height(18.dp))
-
-                        // Divisor "o bien"
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                color = Color(0xFF2C2C2E)
-                            )
-                            Text(
-                                "  o acceso manual  ",
-                                color = Color(0xFF8E8E93),
-                                fontSize = 11.sp
-                            )
-                            HorizontalDivider(
-                                modifier = Modifier.weight(1f),
-                                color = Color(0xFF2C2C2E)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(18.dp))
-
-                        // Botón Secundario: Iniciar Sesión con credenciales locales o demo
-                        Button(
-                            onClick = {
-                                val cleanInput = usernameOrEmail.trim()
-                                if (cleanInput.isBlank() || password.isBlank()) {
-                                    errorMessage = "Por favor completa el usuario y la contraseña"
-                                } else if (cleanInput.length < 3) {
-                                    errorMessage = "El usuario o correo debe tener al menos 3 caracteres"
-                                } else if (password.length < 3) {
-                                    errorMessage = "La contraseña debe tener al menos 3 caracteres"
-                                } else {
-                                    isLoading = true
-                                    onNormalLogin(cleanInput, password)
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(46.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = DarkColors.SurfaceVariant,
-                                contentColor = Color.White
-                            ),
-                            border = BorderStroke(0.5.dp, Color(0xFF38383A)),
-                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-                            enabled = !isLoading
-                        ) {
-                            if (isLoading) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(18.dp),
-                                    color = Color.White,
-                                    strokeWidth = 2.dp
-                                )
-                            } else {
-                                Text(
-                                    "Iniciar con Usuario / Demo",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 13.sp
-                                )
-                            }
                         }
                     }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Badge de seguridad oficial de Meta
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFF1C1C1E))
+                    .border(0.5.dp, Color(0xFF2C2C2E), RoundedCornerShape(12.dp))
+                    .padding(horizontal = 14.dp, vertical = 9.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Filled.Lock,
+                    contentDescription = "Seguridad",
+                    tint = Color(0xFF34C759),
+                    modifier = Modifier.size(15.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Autenticación segura oficial vía Meta Graph API",
+                    fontSize = 11.sp,
+                    color = Color(0xFF8E8E93)
+                )
+            }
 
             Spacer(modifier = Modifier.height(28.dp))
 
             // Footer
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "10° Cuatrimestre • Desarrollo Móvil Multiplataforma",
-                    fontSize = 11.sp,
-                    color = Color(0xFF8E8E93)
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = if (InstagramConfig.useMockData) "Modo Demostración" else "Meta Graph API • Conexión Activa",
-                    fontSize = 10.sp,
-                    color = Color(0xFFA1A1A6)
-                )
-            }
+            Text(
+                text = "Meta © 2026 • Instagram Connect",
+                fontSize = 11.sp,
+                color = Color(0xFF636366)
+            )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 

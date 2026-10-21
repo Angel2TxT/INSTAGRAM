@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_glossy_splash">
+    android:background="#000000">
 
     <!-- Center Content -->
     <LinearLayout
@@ -13,69 +13,76 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <!-- Glossy Logo Container -->
+        <!-- Logo Container with Instagram Gradient -->
         <FrameLayout
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:background="@drawable/bg_glossy_card"
-            android:padding="20dp">
+            android:id="@+id/logoCard"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_instagram_gradient"
+            android:elevation="10dp"
+            android:padding="22dp">
 
             <ImageView
                 android:id="@+id/imgLogo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="GramPulse Logo"
-                android:src="@drawable/ic_pulse_logo"
-                android:tint="@color/glossy_white" />
+                android:contentDescription="Instagram Logo"
+                android:src="@drawable/ic_instagram_logo"
+                android:tint="#FFFFFF" />
         </FrameLayout>
 
-        <!-- App Name -->
+        <!-- App Name: Salida dinámica y animación de latido -->
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:letterSpacing="0.08"
+            android:layout_marginTop="22dp"
+            android:letterSpacing="0.04"
             android:text="GramPulse"
-            android:textColor="@color/glossy_white"
-            android:textSize="32sp"
+            android:textColor="#FFFFFF"
+            android:textSize="34sp"
             android:textStyle="bold" />
 
-        <!-- Subtitle -->
+        <!-- Subtitle en español -->
         <TextView
+            android:id="@+id/txtSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:letterSpacing="0.1"
-            android:text="CONNECTING YOUR INSTAGRAM PULSE"
-            android:textColor="@color/glossy_white_70"
+            android:letterSpacing="0.12"
+            android:text="CONECTANDO TU PULSO DE INSTAGRAM"
+            android:textColor="#B3FFFFFF"
             android:textSize="11sp" />
     </LinearLayout>
 
-    <!-- Bottom Loading Section -->
+    <!-- Bottom Section: "from Meta" -->
     <LinearLayout
+        android:id="@+id/bottomSection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="44dp"
         android:gravity="center"
         android:orientation="vertical">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:indeterminateTint="@color/glossy_white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Iniciando sesión con Instagram..."
-            android:textColor="@color/glossy_white_70"
-            android:textSize="12sp" />
+            android:letterSpacing="0.08"
+            android:text="from"
+            android:textColor="#66FFFFFF"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:letterSpacing="0.12"
+            android:text="META"
+            android:textColor="#E1306C"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </RelativeLayout>

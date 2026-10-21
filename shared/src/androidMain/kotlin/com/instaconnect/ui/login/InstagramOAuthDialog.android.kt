@@ -3,6 +3,7 @@ package com.instaconnect.ui.login
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -25,7 +26,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.instaconnect.data.InstagramConfig
 import com.instaconnect.theme.DarkColors
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Implementación de Android del diálogo OAuth con WebView nativo.
@@ -42,7 +45,7 @@ actual fun InstagramOAuthDialog(
 ) {
     var isPageLoading by remember { mutableStateOf(true) }
     var currentTitle by remember { mutableStateOf("Conectando con Instagram...") }
-    var hasHandledCode by remember { mutableStateOf(false) }
+    val codeHandled = remember { AtomicBoolean(false) }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -139,14 +142,14 @@ actual fun InstagramOAuthDialog(
                                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                                     super.onPageStarted(view, url, favicon)
                                     isPageLoading = true
-                                    url?.let { checkUrlForCode(it) }
+                                    url?.let { checkUrlForCode(view, it) }
                                 }
 
                                 override fun onPageFinished(view: WebView?, url: String?) {
                                     super.onPageFinished(view, url)
                                     isPageLoading = false
                                     currentTitle = "Inicio de sesión oficial"
-                                    url?.let { checkUrlForCode(it) }
+                                    url?.let { checkUrlForCode(view, it) }
                                 }
 
                                 override fun shouldOverrideUrlLoading(
@@ -154,12 +157,10 @@ actual fun InstagramOAuthDialog(
                                     request: WebResourceRequest?
                                 ): Boolean {
                                     val url = request?.url?.toString() ?: return false
-                                    return checkUrlForCode(url)
+                                    return checkUrlForCode(view, url)
                                 }
 
-                                private fun checkUrlForCode(url: String): Boolean {
-                                    if (hasHandledCode) return true
-
+                                private fun checkUrlForCode(view: WebView?, url: String): Boolean {
                                     val uri = Uri.parse(url)
                                     val cleanRedirect = redirectUri.trimEnd('/')
 
@@ -178,9 +179,20 @@ actual fun InstagramOAuthDialog(
                                     if (isRedirect) {
                                         val code = effectiveUri.getQueryParameter("code")
                                         if (!code.isNullOrBlank()) {
-                                            val cleanCode = code.removeSuffix("#_").removeSuffix("%23_").trim()
-                                            hasHandledCode = true
-                                            onCodeReceived(cleanCode)
+                                            if (codeHandled.compareAndSet(false, true)) {
+                                                view?.stopLoading()
+                                                val cleanCode = code.substringBefore('#').substringBefore("%23").removeSuffix("#_").trim()
+
+                                                // Extraer la URL base a la que Meta realmente redirigió
+                                                val actualBase = effectiveUrl.substringBefore('?').substringBefore('#')
+                                                if (actualBase.isNotBlank() && (actualBase.startsWith("http://") || actualBase.startsWith("https://"))) {
+                                                    InstagramConfig.redirectUri = actualBase
+                                                }
+
+                                                Log.i("InstagramOAuth", "Código interceptado: $cleanCode")
+                                                Log.i("InstagramOAuth", "Redirect URI base: ${InstagramConfig.redirectUri}")
+                                                onCodeReceived(cleanCode)
+                                            }
                                             return true
                                         }
 
@@ -189,8 +201,11 @@ actual fun InstagramOAuthDialog(
                                             ?: effectiveUri.getQueryParameter("error")
 
                                         if (!error.isNullOrBlank()) {
-                                            hasHandledCode = true
-                                            onError(error)
+                                            if (codeHandled.compareAndSet(false, true)) {
+                                                view?.stopLoading()
+                                                Log.w("InstagramOAuth", "Error recibido de Meta: $error")
+                                                onError(error)
+                                            }
                                             return true
                                         }
                                     }
