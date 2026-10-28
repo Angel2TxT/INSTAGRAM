@@ -199,7 +199,7 @@ fun WelcomeScreen(
 
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "¡Bienvenido de vuelta!",
+                                    text = "¡Qué bueno verte de nuevo!",
                                     fontSize = 13.sp,
                                     color = Color(0xFF8E8E93),
                                     fontWeight = FontWeight.Medium
@@ -280,7 +280,7 @@ fun WelcomeScreen(
             // Métricas Rápidas en 3 Tarjetas Glossy
             // ==========================================
             Text(
-                text = "Resumen de Cuenta",
+                text = "Tu resumen de cuenta",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
